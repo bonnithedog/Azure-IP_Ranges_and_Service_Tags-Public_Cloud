@@ -1,8 +1,9 @@
-# Azure-IP_Ranges_and_Service_Tags-Public_Cloud
-Overview
+## Azure IPs Firewall Rules Automation
+
+# Overview
 This PowerShell script automates the process of downloading, processing, and configuring Windows Firewall rules based on Azure service tags. The script retrieves a JSON file containing the latest Azure IP ranges, parses the data, and then creates inbound and outbound allow rules for each IP range if they do not already exist.
 
-Functions
+# Functions
 Get-AzureIPs
 Downloads the JSON file containing Azure service tags and their respective IP ranges.
 
@@ -12,7 +13,7 @@ Error Handling: Catches and outputs an error message if the download fails.
 Add-AllowRule
 Creates Windows Firewall allow rules for the specified IP range.
 
-Parameters:
+# Parameters:
 ipRange: The IP range to allow.
 groupName: The name of the firewall rule group.
 displayName: The display name for the firewall rule.
@@ -21,15 +22,15 @@ Rule Creation: Creates new outbound and inbound rules if they do not already exi
 Write-ServiceSections
 Processes each service section's IP addresses from the JSON data and applies firewall rules.
 
-Parameters:
+# Parameters:
 Data: The JSON data object containing Azure service tags and IP ranges.
 Service Processing: Iterates over each service, extracts IP addresses, and calls Add-AllowRule to create firewall rules.
 ServiceTags_Public
 Main function to orchestrate the overall process.
 
-Steps:
+# Steps:
 Calls Get-AzureIPs to download the JSON data.
 Checks if data is retrieved successfully.
 Calls Write-ServiceSections to process and apply firewall rules.
-Usage
+# Usage
 To run the script, simply execute the ServiceTags_Public function. This will initiate the download of the JSON file, parse the IP ranges, and apply the necessary firewall rules.
