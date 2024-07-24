@@ -32,6 +32,31 @@ function Add-AllowRule {
     }
 }
 
+# Function to write each service section's IP addresses to a rule
+function Write-ServiceSections {
+    param (
+        [Parameter(Mandatory = $true)]
+        [Object]$Data
+    )
+
+
+    foreach ($service in $Data.values) {
+        $serviceName = $service.name
+        #Write-Output "Writing Service: $serviceName"
+        # Extract the IP addresses
+        $ipAddresses = $service.properties.addressPrefixes
+        $resolvedIPs = Resolve-DNS -dnsName $dns
+        foreach ($ip in $ipAddresses) {
+            #Write-Output "Allowing traffic to $ip (read from $serviceName)"
+            Add-AllowRule -ipRange $ip -groupName $serviceName -displayName "Allow $serviceName"
+        }
+    }
+
+
+
+    }
+
+
 
 
 # Main- function to execute the process
