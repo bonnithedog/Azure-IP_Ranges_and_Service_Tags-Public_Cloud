@@ -2,9 +2,12 @@
 
 ## Overview
 
+add-fw-rule_Azure-IP_Ranges_and_Service_Tags-Public_Cloud.ps1
+
 This PowerShell script automates the process of downloading, processing, and configuring Windows Firewall rules based on Azure service tags. 
 The script retrieves a JSON file containing the latest Azure IP ranges, parses the data, and then creates inbound and outbound allow rules for each IP range if they do not already exist.
 This is done from this page https://www.microsoft.com/en-us/download/details.aspx?id=56519&msockid=088347aa29b462b33e10533928e36384
+
 
 ## Functions
 
