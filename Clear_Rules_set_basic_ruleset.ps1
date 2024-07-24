@@ -41,14 +41,6 @@ $allowedDNS = @(
     
 )
 
-# Create a rule to allow incoming DHCP traffic (UDP port 67)
-New-NetFirewallRule -DisplayName "Allow DHCP Inbound" -Direction Inbound -Protocol UDP -LocalPort 67 -Action Allow  -Group "DHCP Rules"
-
-# Create a rule to allow outgoing DHCP traffic (UDP port 68)
-New-NetFirewallRule -DisplayName "Allow DHCP Outbound" -Direction Outbound -Protocol UDP -LocalPort 68 -Action Allow  -Group "DHCP Rules"
-
-# Verify the rules have been created
-Get-NetFirewallRule -DisplayName "Allow DHCP*"
 
 
 # DNS Servers
@@ -59,7 +51,7 @@ $interfaceAlias = Get-NetAdapter | Where-Object { $_.Status -eq "Up" } | Select-
 Set-DnsClientServerAddress -InterfaceAlias $interfaceAlias -ServerAddresses ($dnsServers)
 
 
-# Allow traffic to DNS servers first to ensure DNS resolution works
+# Allow traffic to DNS servers first to ensure DNS resolution works. Adding DHCP Rules.  
 foreach ($dns in $dnsServers) {
     Write-Output "Allowing traffic to DNS server $dns"
     $existingRuleOutbound = Get-NetFirewallRule | Where-Object { $_.DisplayName -eq "Allow DNS Server $dns" -and $_.Direction -eq "Outbound" }
@@ -67,9 +59,20 @@ foreach ($dns in $dnsServers) {
     
     if (-not $existingRuleOutbound) {
         New-NetFirewallRule -DisplayName "Allow DNS Server $dns" -Direction Outbound -Action Allow -RemoteAddress $dns -Profile Any -Protocol UDP -RemotePort 53 -Group "DNS Rules"
+
+       
+        # Create a rule to allow outgoing DHCP traffic (UDP port 68)
+        New-NetFirewallRule -DisplayName "Allow DHCP Outbound" -Direction Outbound -Protocol UDP -LocalPort 68 -Action Allow  -Group "DHCP Rules"
+
+
     }
     if (-not $existingRuleInbound) {
         New-NetFirewallRule -DisplayName "Allow DNS Server $dns" -Direction Inbound -Action Allow -RemoteAddress $dns -Profile Any -Protocol UDP -RemotePort 53 -Group "DNS Rules"
+
+        # Create a rule to allow incoming DHCP traffic (UDP port 67)
+        New-NetFirewallRule -DisplayName "Allow DHCP Inbound" -Direction Inbound -Protocol UDP -LocalPort 67 -Action Allow  -Group "DHCP Rules"
+
+
     }
 }
 
